@@ -1,32 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  // useEffect,
+  useMemo,
+} from "react";
 import shortid from 'shortid';
 import { Box } from "./Box";
 import { ContactForm } from "./ContactForm";
 import { ContactList } from "./ContactList";
 import { Filter } from "./Filter";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-
-const defaultContacts = [
-  { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-  { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-  { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-  { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { deleteContactsAction, filterInputAction, setContactsAction } from "redux/contactsFilter/contacts.actions";
 
 export const App = () => {
-  const [contacts, setContacts] = useState(() => {
-    return JSON.parse(window.localStorage.getItem('contacts')) ?? defaultContacts;
-  });
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    window.localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
-    
-  const [filter, setFilter] = useState('');
+  const filter = useSelector(state => state.contacts.filter);
+  const contacts = useSelector(state => state.contacts.contacts);
+
   const changeFilter = e => {
-    setFilter(e.target.value);
+    dispatch(
+      filterInputAction(
+        e.target.value,
+      )
+    );
   };
-
+  //  const [contacts, setContacts] = useState(() => {
+  //   return JSON.parse(window.localStorage.getItem('contacts')) ?? initState.contactsList.contacts;
+  // });
+ 
+  // useEffect(() => {
+  //   window.localStorage.setItem('contacts', JSON.stringify(contacts));
+  // }, [contacts]);
+    
   const formSubmitHandler = ({ name, number }) => {
     const currentContact = { name: name, id: shortid.generate(), number: number }
     const contactDublicate = contacts.find(c => c.name === currentContact.name);
@@ -34,15 +39,21 @@ export const App = () => {
       Notify.failure(`${currentContact.name} is allready in contacts.`);
       return;
     }
-    setContacts(prev => [...prev, currentContact]
-    );
+    dispatch(setContactsAction(
+      currentContact
+    ));
   };
 
-  const normalizedFilter = filter.toLowerCase();
-  const visibleContacts = contacts.filter(n => n.name.toLowerCase().includes(normalizedFilter));
+  const visibleContacts = useMemo(() => {
+    return contacts.filter(n =>
+      n.name.toLowerCase().includes(filter.toLowerCase()),
+    );
+  }, [contacts, filter]);
   
   const deleteContact = id => {
-    setContacts(contacts.filter(c => c.id !== id));
+    dispatch(deleteContactsAction(
+      id
+    ));
   };
 
   return (
