@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { nameAction, numberAction, resetNameAction, resetNumberAction } from "redux/contactForm/form.action";
 import { Box } from '../Box';
 
 export const ContactForm = ({ onSubmit }) => {
-    const [name, setName] = useState('');
-    const [number, setNumber] = useState('');
+    const dispatch = useDispatch();
+
+    const name = useSelector(state => state.form.name);
+    const number = useSelector(state => state.form.number);
 
     const handleChange = e => {
         const { name, value } = e.target;
         switch (name) {
             case 'name':
-                setName(value);
+                dispatch(nameAction(value));
                 break;
             case 'number':
-                setNumber(value);
+                dispatch(numberAction(value));
                 break;
             default:
                 return;
@@ -27,8 +31,8 @@ export const ContactForm = ({ onSubmit }) => {
     };
 
     const reset = () => {
-        setName('');
-        setNumber('');
+        dispatch(resetNameAction());
+        dispatch(resetNumberAction());
     };
 
     return (
