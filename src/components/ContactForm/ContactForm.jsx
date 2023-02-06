@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { nameAction, numberAction, resetNameAction, resetNumberAction } from "redux/contactForm/form.action";
+import { nameAction, numberAction, resetNameAction, resetNumberAction } from "redux/contactForm/form.slice";
 import { Box } from '../Box';
 
 export const ContactForm = ({ onSubmit }) => {
