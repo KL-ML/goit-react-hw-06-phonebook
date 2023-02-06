@@ -9,7 +9,7 @@ import { ContactList } from "./ContactList";
 import { Filter } from "./Filter";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { useDispatch, useSelector } from "react-redux";
-import { deleteContactsAction, filterInputAction, setContactsAction } from "redux/contactsFilter/contacts.actions";
+import { deleteContactsAction, filterInputAction, setContactsAction } from "redux/contactsFilter/contacts.slice";
 
 export const App = () => {
   const dispatch = useDispatch();
